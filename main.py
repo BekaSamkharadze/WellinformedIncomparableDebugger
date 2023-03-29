@@ -1,7 +1,7 @@
 import logging
 from botocore.exceptions import ClientError
 from auth import init_client
-from bucket.crud import list_buckets, create_bucket, delete_bucket, bucket_exists
+from bucket.crud import list_buckets, create_bucket, delete_bucket, bucket_exists, upload_large_file, upload_file
 from bucket.policy import read_bucket_policy, assign_policy
 from object.crud import download_file_and_upload_to_s3, get_objects
 from bucket.encryption import set_bucket_encryption, read_bucket_encryption
@@ -167,6 +167,13 @@ parser.add_argument("-uf",
                     nargs="?",
                     const="True",
                     default="False")
+parser.add_argument("-ulf",
+                    "--upload_large_file",
+                    type=str,
+                    help="Upload Large file",
+                    nargs="?",
+                    const="True",
+                    default="False")
 
 
 def main():
@@ -212,6 +219,12 @@ def main():
 
     if (args.list_objects == "True"):
       get_objects(s3_client, args.bucket_name)
+
+    if (args.upload_file == "True"):
+      upload_file(s3_client, "hello.txt", args.bucket_name)
+
+    if (args.upload_large_file == "True"):
+      upload_large_file(s3_client, "largehello.txt", args.bucket_name)
 
   if (args.list_buckets):
     buckets = list_buckets(s3_client)

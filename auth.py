@@ -1,5 +1,8 @@
 import boto3
 from os import getenv
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def init_client():

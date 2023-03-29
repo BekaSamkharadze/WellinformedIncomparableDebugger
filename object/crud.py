@@ -2,6 +2,10 @@ from urllib.request import urlopen
 import io
 from hashlib import md5
 from time import localtime
+import boto3
+from os import getenv
+from botocore.config import Config
+import os
 
 
 def get_objects(aws_s3_client, bucket_name) -> str:
@@ -27,6 +31,46 @@ def download_file_and_upload_to_s3(aws_s3_client,
   # public URL
   return "https://s3-{0}.amazonaws.com/{1}/{2}".format('us-west-2',
                                                        bucket_name, file_name)
+
+
+AWS_REGION = getenv("AWS_REGION", "eu-central-1")
+CUSTOM_CONFIG = Config(region_name=AWS_REGION, )
+BUCKET = "btu-lecture-3"
+
+s3_client = boto3.client("s3", config=CUSTOM_CONFIG)
+PART_BYTES = 1024 * 10
+
+
+def multipart_upload(filename, key):
+  mpu = s3_client.create_multipart_upload(Bucket=BUCKET, Key=key)
+  mpu_id = mpu["UploadId"]
+  parts = []
+  uploaded_bytes = 0
+  total_bytes = os.stat(filename).st_size
+  with open(filename, "rb") as f:
+    i = 1
+    while True:
+      data = f.read(PART_BYTES)
+      if not len(data):
+        break
+      part = s3_client.upload_part(Body=data,
+                                   Bucket=BUCKET,
+                                   Key=key,
+                                   UploadId=mpu_id,
+                                   PartNumber=i)
+      parts.append({"PartNumber": i, "ETag": part["ETag"]})
+      uploaded_bytes += len(data)
+      print("{0} of {1} uploaded".format(uploaded_bytes, total_bytes))
+      i += 1
+  result = s3_client.complete_multipart_upload(
+    Bucket=BUCKET, Key=key, UploadId=mpu_id, MultipartUpload={"Parts": parts})
+  print(result)
+  return result
+
+
+def upload_large_file(aws_s3_client, filename, bucket_name):
+  response = multipart_upload(filename, filename)
+  return True
 
 
 def upload_file(aws_s3_client, filename, bucket_name):
