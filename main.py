@@ -220,11 +220,13 @@ def main():
     if (args.list_objects == "True"):
       get_objects(s3_client, args.bucket_name)
 
-    if (args.upload_file == "True"):
-      upload_file(s3_client, "hello.txt", args.bucket_name)
+    if args.upload_file:
+      upload_file(s3_client, args.upload_file, args.bucket_name)
+      print("File uploaded successfully")
 
-    if (args.upload_large_file == "True"):
-      upload_large_file(s3_client, "largehello.txt", args.bucket_name)
+    if args.upload_large_file:
+      upload_large_file(s3_client, args.upload_file, args.bucket_name)
+      print("File uploaded successfully")
 
   if (args.list_buckets):
     buckets = list_buckets(s3_client)

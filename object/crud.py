@@ -69,8 +69,12 @@ def multipart_upload(filename, key):
 
 
 def upload_large_file(aws_s3_client, filename, bucket_name):
-  response = multipart_upload(filename, filename)
-  return True
+  response = aws_s3_client.upload_file.multipart_upload(filename, bucket_name,"hello.txt")
+  if response is not None:
+      status_code = response["ResponseMetadata"]["HTTPStatusCode"]
+      if status_code == 200:
+          return True
+  return False
 
 
 def upload_file(aws_s3_client, filename, bucket_name):
