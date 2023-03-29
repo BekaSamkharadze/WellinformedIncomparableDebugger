@@ -1,9 +1,9 @@
 import logging
 from botocore.exceptions import ClientError
 from auth import init_client
-from bucket.crud import list_buckets, create_bucket, delete_bucket, bucket_exists, upload_large_file, upload_file
+from bucket.crud import list_buckets, create_bucket, delete_bucket, bucket_exists
 from bucket.policy import read_bucket_policy, assign_policy
-from object.crud import download_file_and_upload_to_s3, get_objects
+from object.crud import download_file_and_upload_to_s3, get_objects, upload_large_file, upload_file
 from bucket.encryption import set_bucket_encryption, read_bucket_encryption
 import argparse
 
