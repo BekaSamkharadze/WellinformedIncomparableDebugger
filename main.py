@@ -225,7 +225,7 @@ def main():
       print("File uploaded successfully")
 
     if args.upload_large_file:
-      upload_large_file(s3_client, args.upload_file, args.bucket_name)
+      upload_large_file()
       print("File uploaded successfully")
 
   if (args.list_buckets):
