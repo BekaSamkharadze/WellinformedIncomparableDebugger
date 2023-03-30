@@ -92,3 +92,11 @@ def upload_file_put(aws_s3_client, filename, bucket_name):
     aws_s3_client.put_object(Bucket=bucket_name,
                              Key="hello_put.txt",
                              Body=file.read())
+    
+def delete_object(aws_s3_client, bucket_name, object_name):
+      response = aws_s3_client.delete_object(Bucket=bucket_name, Key=object_name)
+      if response is not None:
+          status_code = response["ResponseMetadata"]["HTTPStatusCode"]
+          if status_code == 204:
+               return True
+      return False

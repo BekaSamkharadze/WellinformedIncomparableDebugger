@@ -3,7 +3,7 @@ from botocore.exceptions import ClientError
 from auth import init_client
 from bucket.crud import list_buckets, create_bucket, delete_bucket, bucket_exists
 from bucket.policy import read_bucket_policy, assign_policy
-from object.crud import download_file_and_upload_to_s3, get_objects, upload_large_file, upload_file
+from object.crud import download_file_and_upload_to_s3, get_objects, upload_large_file, upload_file,delete_object
 from bucket.encryption import set_bucket_encryption, read_bucket_encryption
 import argparse
 
@@ -227,6 +227,10 @@ def main():
     if args.upload_large_file:
       upload_large_file()
       print("File uploaded successfully")
+
+    if args.delete_file:
+      delete_object(s3_client,args.bucket_name,args.object_name)
+      print(f"File {args.object_name} successfully deleted from {args.bucket_name}")
 
   if (args.list_buckets):
     buckets = list_buckets(s3_client)
